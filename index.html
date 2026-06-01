@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -708,37 +708,38 @@ footer p {
   opacity: 1;
   transform: translateY(0);
 }
-.landing{
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    gap:40px;
-    background:#080808;
+
+.landing {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  background: #080808;
 }
 
-.landing-logo{
-    max-width:80%;
-    max-height:60vh;
-    width:auto;
-    height:auto;
+.landing-logo {
+  max-width: 80%;
+  max-height: 60vh;
+  width: auto;
+  height: auto;
 }
 
-.landing-btn{
-    padding:15px 40px;
-    border:1px solid #fff;
-    color:#fff;
-    text-decoration:none;
-    font-family:'DM Mono', monospace;
-    text-transform:uppercase;
-    letter-spacing:2px;
-    transition:0.3s;
+.landing-btn {
+  padding: 15px 40px;
+  border: 1px solid #fff;
+  color: #fff;
+  text-decoration: none;
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: 0.3s;
 }
 
-.landing-btn:hover{
-    background:#fff;
-    color:#080808;
+.landing-btn:hover {
+  background: #fff;
+  color: #080808;
 }
 
 @media (max-width: 768px) {
@@ -755,31 +756,103 @@ footer p {
   h1 { font-size: clamp(4rem, 15vw, 8rem); }
   .hero-sub { flex-direction: column; gap: 2.5rem; }
 }
+
+.hero-glow {
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(74,143,255,.35) 0%,
+    rgba(74,143,255,.15) 30%,
+    transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  filter: blur(80px);
+  z-index: 0;
+}
+
+.stats {
+  display: flex;
+  gap: 60px;
+  margin-top: 60px;
+}
+
+.stats h3 {
+  font-size: 4rem;
+  color: #4a8fff;
+  font-family: 'Bebas Neue';
+}
+
+.stats p {
+  color: rgba(255,255,255,.6);
+}
+
+.code-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  color: rgba(74,143,255,0.08);
+  line-height: 2;
+  white-space: pre;
+  pointer-events: none;
+  animation: scrollCode 20s linear infinite;
+}
+
+@keyframes scrollCode {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
 </style>
 </head>
 <body>
 
-<body>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <span style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.1em;color:var(--text);">Orio</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#realisations">réalisations</a></li>
+    <li><a href="#services">services</a></li>
+    <li><a href="#tarifs">tarifs</a></li>
+    <li><a href="#contact" class="nav-cta">contact</a></li>
+  </ul>
+</nav>
 
-<div class="landing">
-    <img src="logo.png" alt="Logo du développeur" class="landing-logo">
-
-    <a href="#accueil" class="landing-btn">
-        Accéder au site
-    </a>
-</div>
-
+<!-- HERO -->
 <div class="hero" id="accueil">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="code-bg">
+&lt;html&gt;
+&lt;body&gt;
+&lt;section class="hero"&gt;
+&lt;h1&gt;Votre site&lt;/h1&gt;
+&lt;/section&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;div class="container"&gt;
+&lt;header&gt;
+&lt;nav&gt;
+&lt;/nav&gt;
+&lt;/header&gt;
+&lt;/div&gt;
+  </div>
 
   <p class="hero-eyebrow">Développement web ·</p>
 
   <h1>
-    On<br>
-    Construit<br>
-    <span class="dim">Le Web</span><br>
-    Autrement.
+    Des sites qui<br>
+    font vendre,<br>
+    réserver et<br>
+    grandir.
   </h1>
 
   <div class="hero-sub">
@@ -792,10 +865,21 @@ footer p {
       <a href="#contact" class="btn-main">
         Démarrer un projet →
       </a>
+    </div>
+  </div>
 
-      <a href="#realisations" class="btn-ghost">
-        Voir nos réalisations
-      </a>
+  <div class="stats">
+    <div>
+      <h3>15+</h3>
+      <p>Sites créés</p>
+    </div>
+    <div>
+      <h3>24h</h3>
+      <p>Délai moyen de réponse</p>
+    </div>
+    <div>
+      <h3>100%</h3>
+      <p>Sur mesure</p>
     </div>
   </div>
 </div>
@@ -827,37 +911,31 @@ footer p {
       <span class="sec-num">01 /</span>
       <h2>Réalisations</h2>
     </div>
-    <span class="sec-count">06 projets</span>
+    <span class="sec-count">03 projets</span>
   </div>
   <div class="projects-grid">
     <div class="project-card fade-in">
       <p class="project-num">001</p>
       <p class="project-type">auto-ecole</p>
-      <p class="project-name">auto-école de longueau </p>
+      <p class="project-name">auto-école de longueau</p>
       <p class="project-desc">Création d'un site vitrine pour une auto-école, avec une mise en page moderne et une navigation simple. Le site met en avant les formations, les tarifs et les coordonnées de l'établissement tout en offrant une expérience utilisateur fluide sur ordinateur et mobile.</p>
-      <a href="https://autoecoledelongueau.github.io/autoecoledelongueau/" target="_blank">
-    Voir le site
-</a>
+      <a href="https://autoecoledelongueau.github.io/autoecoledelongueau/" target="_blank">Voir le site</a>
     </div>
     <div class="project-card fade-in" style="transition-delay:0.1s">
       <p class="project-num">002</p>
-      <p class="project-type">Association </p>
-      <p class="project-name">Petanque bove </p>
-      <p class="project-desc">Développement d’un site associatif dédié à la pétanque, conçu pour améliorer la visibilité du club, informer les adhérents et valoriser les événements organisés par l’association.</p>
-      <a href="https://lukasprn2.github.io/petanque80/" target="_blank">
-    Voir le site
-</a>
+      <p class="project-type">Association</p>
+      <p class="project-name">Petanque bove</p>
+      <p class="project-desc">Développement d'un site associatif dédié à la pétanque, conçu pour améliorer la visibilité du club, informer les adhérents et valoriser les événements organisés par l'association.</p>
+      <a href="https://lukasprn2.github.io/petanque80/" target="_blank">Voir le site</a>
     </div>
     <div class="project-card fade-in" style="transition-delay:0.15s">
       <p class="project-num">003</p>
       <p class="project-type">restaurant</p>
       <p class="project-name">kebab de longueau</p>
-      <p class="project-desc">Création d’un site vitrine pour un restaurant de kebab, conçu pour présenter les menus, les spécialités proposées et les informations de contact de l’établissement. Le projet met l’accent sur une navigation simple, un design moderne et une expérience utilisateur fluide sur ordinateur comme sur mobile.</p>
-      <a href="https://lukasprn2.github.io/kebab/" target="_blank">
-    Voir le site
-</a>
+      <p class="project-desc">Création d'un site vitrine pour un restaurant de kebab, conçu pour présenter les menus, les spécialités proposées et les informations de contact de l'établissement. Le projet met l'accent sur une navigation simple, un design moderne et une expérience utilisateur fluide sur ordinateur comme sur mobile.</p>
+      <a href="https://lukasprn2.github.io/kebab/" target="_blank">Voir le site</a>
     </div>
-    
+  </div>
 </section>
 
 <!-- SERVICES -->
@@ -895,7 +973,7 @@ footer p {
       <div class="service-arrow">↗</div>
     </div>
     <div class="service-item fade-in">
-      <p class="service-name">Refonte & Optimisation</p>
+      <p class="service-name">Refonte &amp; Optimisation</p>
       <div>
         <p class="service-body">Votre site existe mais sous-performe ? Audit complet, refonte technique, Core Web Vitals et accessibilité WCAG.</p>
         <div class="service-chips"><span class="chip">Audit</span><span class="chip">Core Web Vitals</span><span class="chip">WCAG</span></div>
@@ -924,7 +1002,7 @@ footer p {
   <div class="pricing-grid fade-in">
     <div class="plan">
       <p class="plan-name">Starter</p>
-      <p class="plan-price">500€<span class="unit">€</span></p>
+      <p class="plan-price">500<span class="unit">€</span></p>
       <p class="plan-cadence">Paiement unique</p>
       <ul class="plan-features">
         <li>Site vitrine 1 à 5 pages</li>
@@ -938,11 +1016,11 @@ footer p {
     <div class="plan featured">
       <p class="plan-label">✦ Populaire</p>
       <p class="plan-name">Pro</p>
-      <p class="plan-price">1 000€ <span class="unit">€</span></p>
+      <p class="plan-price">1 000<span class="unit">€</span></p>
       <p class="plan-cadence">Paiement en 2× possible</p>
       <ul class="plan-features">
         <li>Jusqu'à 15 pages</li>
-        <li>mise en place de la fiche google business </li>
+        <li>Mise en place de la fiche Google Business</li>
         <li>SEO technique avancé</li>
         <li>Intégrations tierces</li>
         <li>2 mois de support inclus</li>
@@ -951,13 +1029,13 @@ footer p {
     </div>
     <div class="plan">
       <p class="plan-name">Sur Mesure</p>
-      <p class="plan-price">offre privillège </p>
-      <p class="plan-cadence">1 500€</p>
+      <p class="plan-price">1 500<span class="unit">€</span></p>
+      <p class="plan-cadence">Offre privilège</p>
       <ul class="plan-features">
         <li>Application web complexe</li>
         <li>E-commerce avancé</li>
-         <li>Outil interne / SaaS</li>
-          <li>donnée cripté </li>
+        <li>Outil interne / SaaS</li>
+        <li>Données chiffrées</li>
         <li>Engagement long terme</li>
       </ul>
       <a href="#contact" class="plan-cta">Discuter →</a>
@@ -1002,6 +1080,27 @@ footer p {
       </a>
     </div>
   </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" style="border-top: 1px solid var(--line);">
+  <h2>Questions fréquentes</h2>
+  <details>
+    <summary>Combien coûte un site ?</summary>
+    <p>A partir de 500€ selon le projet.</p>
+  </details>
+  <details>
+    <summary>Combien de temps faut-il ?</summary>
+    <p>Entre 1 et 4 semaines.</p>
+  </details>
+  <details>
+    <summary>Le référencement est-il inclus ?</summary>
+    <p>Oui, sur toutes les offres.</p>
+  </details>
+  <details>
+    <summary>Puis-je modifier mon site ?</summary>
+    <p>Bien sûr.</p>
+  </details>
 </section>
 
 <div class="footer-wrap">
