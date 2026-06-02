@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demande de devis - Orio</title>
+
+<style>
+:root{
+    --cream:#f5f0e8;
+    --white:#ffffff;
+    --charcoal:#1c1c1c;
+    --accent:#c4a882;
+}
+
+body{
+    font-family: Arial, sans-serif;
+    background: var(--cream);
+    margin:0;
+    padding:50px 20px;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+    background:var(--white);
+    padding:40px;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:40px;
+}
+
+.option{
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    margin-bottom:15px;
+}
+
+.option label{
+    cursor:pointer;
+    font-size:16px;
+}
+
+.section-title{
+    margin-top:35px;
+    margin-bottom:20px;
+    color:var(--charcoal);
+}
+
+input[type="number"]{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    margin-top:10px;
+}
+
+textarea{
+    width:100%;
+    min-height:120px;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    resize:vertical;
+}
+
+.total-box{
+    margin-top:30px;
+    padding:20px;
+    background:#faf7f2;
+    border-left:4px solid var(--accent);
+}
+
+.total{
+    font-size:28px;
+    font-weight:bold;
+    color:var(--charcoal);
+}
+
+button{
+    width:100%;
+    margin-top:25px;
+    padding:16px;
+    border:none;
+    background:var(--charcoal);
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+    border-radius:6px;
+}
+
+button:hover{
+    opacity:.9;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>Demande de devis</h1>
+
+<p class="subtitle">
+Personnalisez votre projet et obtenez une estimation.
+</p>
+
+<h2 class="section-title">Options complémentaires</h2>
+
+<div class="option">
+<label>
+<input type="checkbox" id="logo-reprise">
+ Reprise ou modification d'un logo existant (+15 €)
+</label>
+</div>
+
+<div class="option">
+<label>
+<input type="checkbox" id="logo-creation">
+ Création d'un logo sur mesure (+20 €)
+</label>
+</div>
+
+<h2 class="section-title">Nombre de pages</h2>
+
+<p>
+Le site inclut jusqu'à <strong>10 pages</strong>.<br>
+Au-delà, un supplément de <strong>5 € par tranche de 5 pages</strong> est appliqué.
+</p>
+
+<input
+type="number"
+id="pages"
+value="10"
+min="10"
+>
+
+<h2 class="section-title">Description du projet</h2>
+
+<textarea
+placeholder="Décrivez votre projet..."
+></textarea>
+
+<div class="total-box">
+<p>Total estimé :</p>
+<div class="total" id="total">0 €</div>
+</div>
+
+<button onclick="envoyerDevis()">
+Envoyer ma demande
+</button>
+
+</div>
+
+<script>
+
+const repriseLogo = document.getElementById("logo-reprise");
+const creationLogo = document.getElementById("logo-creation");
+const pages = document.getElementById("pages");
+const totalElement = document.getElementById("total");
+
+function calculerTotal(){
+
+let total = 0;
+
+// Reprise logo
+if(repriseLogo.checked){
+    total += 15;
+}
+
+// Création logo
+if(creationLogo.checked){
+    total += 20;
+}
+
+// Pages supplémentaires
+const nbPages = parseInt(pages.value) || 10;
+
+if(nbPages > 10){
+
+    const pagesSupp = nbPages - 10;
+
+    const tranches = Math.ceil(pagesSupp / 5);
+
+    total += tranches * 5;
+}
+
+totalElement.textContent = total + " €";
+}
+
+repriseLogo.addEventListener("change", calculerTotal);
+creationLogo.addEventListener("change", calculerTotal);
+pages.addEventListener("input", calculerTotal);
+
+calculerTotal();
+
+function envoyerDevis(){
+
+alert(
+"Merci pour votre demande.\n\nTotal estimé : " +
+totalElement.textContent
+);
+
+}const service = new URLSearchParams(window.location.search).get("service");
+
+let prixBase = 0;
+let nomService = "";
+
+switch(service){
+
+    case "vitrine":
+        prixBase = 390;
+        nomService = "Site vitrine";
+        break;
+
+    case "refonte":
+        prixBase = 250;
+        nomService = "Refonte et optimisation";
+        break;
+
+    case "social":
+        prixBase = 19;
+        nomService = "Gestion des réseaux sociaux";
+        break;
+
+    case "maintenance":
+        prixBase = 19;
+        nomService = "Maintenance";
+        break;
+
+    default:
+        prixBase = 0;
+        nomService = "Service";
+}
+
+</script>
+
+</body>
+</html>
