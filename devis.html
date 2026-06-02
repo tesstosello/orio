@@ -20,6 +20,27 @@ body{
     padding:50px 20px;
 }
 
+.logo-header{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.logo-header img{
+    width:220px;
+    max-width:100%;
+    display:block;
+    margin:auto;
+}
+
+@keyframes logoFloat{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-8px);
+    }
+}
+
 .container{
     max-width:800px;
     margin:auto;
@@ -66,6 +87,24 @@ input[type="number"]{
     margin-top:10px;
 }
 
+.form-group{
+    margin-bottom:15px;
+}
+
+.form-group input{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:15px;
+    box-sizing:border-box;
+}
+
+.form-group input:focus{
+    outline:none;
+    border-color:var(--accent);
+}
+
 textarea{
     width:100%;
     min-height:120px;
@@ -107,7 +146,17 @@ button:hover{
 </head>
 <body>
 
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script>
+emailjs.init("ZqDhOS49IXAntmCiw");
+</script>
+
 <div class="container">
+
+<div class="logo-header">
+    <img src="orio.png" alt="Orio">
+</div>
 
 <h1>Demande de devis</h1>
 
@@ -116,6 +165,7 @@ Personnalisez votre projet et obtenez une estimation.
 </p>
 
 <h2 class="section-title">Options complémentaires</h2>
+
 
 <div class="option">
 <label>
@@ -131,21 +181,56 @@ Personnalisez votre projet et obtenez une estimation.
 </label>
 </div>
 
-<h2 class="section-title">Nombre de pages</h2>
+<div class="option">
+<label>
+<input type="checkbox" id="donnee-chiffree">
+ Donnée chiffrées  (+50 €)
+</label>
+</div>
 
-<p>
-Le site inclut jusqu'à <strong>10 pages</strong>.<br>
-Au-delà, un supplément de <strong>5 € par tranche de 5 pages</strong> est appliqué.
-</p>
+<div class="option">
+<label>
+<input type="checkbox" id="compte-admin">
+ Compte Administrateur  (+50 €)
+</label>
+</div>
 
-<input
-type="number"
-id="pages"
-value="10"
-min="10"
->
+<div id="bloc-pages">
 
-<h2 class="section-title">Description du projet</h2>
+    <h2 class="section-title">Nombre de pages</h2>
+
+    <p>
+    Le site inclut jusqu'à <strong>10 pages</strong>.<br>
+    Au-delà, un supplément de <strong>5 € par tranche de 5 pages</strong> est appliqué.
+    </p>
+
+    <input
+    type="number"
+    id="pages"
+    value="10"
+    min="10"
+    >
+
+</div>
+
+<h2 id="service-nom"></h2>
+
+  <div class="total-box">
+    <p>Tarif à partir de</p>
+    <div id="prix-base"></div>
+    <small>Le tarif final dépend des options sélectionnées et des besoins de votre projet.</small>
+  </div>
+  <div class="form-group">
+    <input type="text" id="nom" placeholder="Nom" required>
+  </div>
+
+ <div class="form-group">
+    <input type="text" id="prenom" placeholder="Prénom" required>
+ </div>
+
+ <div class="form-group">
+    <input type="email" id="email" placeholder="Adresse e-mail" required>
+ </div>
 
 <textarea
 placeholder="Décrivez votre projet..."
@@ -162,56 +247,12 @@ Envoyer ma demande
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <script>
 
-const repriseLogo = document.getElementById("logo-reprise");
-const creationLogo = document.getElementById("logo-creation");
-const pages = document.getElementById("pages");
-const totalElement = document.getElementById("total");
 
-function calculerTotal(){
-
-let total = 0;
-
-// Reprise logo
-if(repriseLogo.checked){
-    total += 15;
-}
-
-// Création logo
-if(creationLogo.checked){
-    total += 20;
-}
-
-// Pages supplémentaires
-const nbPages = parseInt(pages.value) || 10;
-
-if(nbPages > 10){
-
-    const pagesSupp = nbPages - 10;
-
-    const tranches = Math.ceil(pagesSupp / 5);
-
-    total += tranches * 5;
-}
-
-totalElement.textContent = total + " €";
-}
-
-repriseLogo.addEventListener("change", calculerTotal);
-creationLogo.addEventListener("change", calculerTotal);
-pages.addEventListener("input", calculerTotal);
-
-calculerTotal();
-
-function envoyerDevis(){
-
-alert(
-"Merci pour votre demande.\n\nTotal estimé : " +
-totalElement.textContent
-);
-
-}const service = new URLSearchParams(window.location.search).get("service");
+const service = new URLSearchParams(window.location.search).get("service");
 
 let prixBase = 0;
 let nomService = "";
@@ -241,6 +282,194 @@ switch(service){
     default:
         prixBase = 0;
         nomService = "Service";
+}
+
+if(service === "social" || service === "maintenance"){
+
+    const optionDonnee = document.getElementById("donnee-chiffree");
+    const optionAdmin = document.getElementById("compte-admin");
+
+    if(optionDonnee){
+        optionDonnee.closest(".option").style.display = "none";
+    }
+
+    if(optionAdmin){
+        optionAdmin.closest(".option").style.display = "none";
+    }
+
+    const blocPages = document.getElementById("bloc-pages");
+
+    if(blocPages){
+    blocPages.style.display = "none";
+}
+}
+
+const repriseLogo = document.getElementById("logo-reprise");
+const creationLogo = document.getElementById("logo-creation");
+const donneeChiffree = document.getElementById("donnee-chiffree");
+const compteAdmin = document.getElementById("compte-admin");
+
+const pages = document.getElementById("pages");
+const totalElement = document.getElementById("total");
+
+const serviceNom = document.getElementById("service-nom");
+const prixBaseElement = document.getElementById("prix-base");
+
+if(serviceNom){
+    serviceNom.textContent = nomService;
+}
+
+if(prixBaseElement){
+
+    if(service === "social" || service === "maintenance"){
+        prixBaseElement.textContent = prixBase + " €/mois";
+    } else {
+        prixBaseElement.textContent = prixBase + " €";
+    }
+
+}
+
+function calculerTotal(){
+
+    let abonnement = prixBase;
+    let fraisUnique = 0;
+
+    // Reprise logo
+    if(repriseLogo && repriseLogo.checked){
+        fraisUnique += 15;
+    }
+
+    // Création logo
+    if(creationLogo && creationLogo.checked){
+        fraisUnique += 20;
+    }
+
+    // Données chiffrées
+    if(donneeChiffree && donneeChiffree.checked){
+        fraisUnique += 50;
+    }
+
+    // Compte administrateur
+    if(compteAdmin && compteAdmin.checked){
+        fraisUnique += 50;
+    }
+
+    // Pages supplémentaires
+    if(
+        pages &&
+        service !== "social" &&
+        service !== "maintenance"
+    ){
+
+        const nbPages = parseInt(pages.value) || 10;
+
+        if(nbPages > 10){
+
+            const pagesSupp = nbPages - 10;
+            const tranches = Math.ceil(pagesSupp / 5);
+
+            fraisUnique += tranches * 5;
+        }
+    }
+
+    // Cas abonnements
+    if(service === "social" || service === "maintenance"){
+
+        totalElement.innerHTML =
+            "Premier mois : <strong>" +
+            (abonnement + fraisUnique) +
+            " €</strong><br>" +
+            "Puis : <strong>" +
+            abonnement +
+            " €/mois</strong>";
+
+    }else{
+
+        totalElement.textContent =
+            (abonnement + fraisUnique) + " €";
+    }
+}
+
+if(repriseLogo){
+    repriseLogo.addEventListener("change", calculerTotal);
+}
+
+if(creationLogo){
+    creationLogo.addEventListener("change", calculerTotal);
+}
+
+if(donneeChiffree){
+    donneeChiffree.addEventListener("change", calculerTotal);
+}
+
+if(compteAdmin){
+    compteAdmin.addEventListener("change", calculerTotal);
+}
+
+if(pages){
+    pages.addEventListener("input", calculerTotal);
+}
+
+calculerTotal();
+
+emailjs.init("ZqDhOS49IXAntmCiw");
+
+
+
+function envoyerDevis() {
+
+    const nom = document.getElementById("nom").value;
+    const prenom = document.getElementById("prenom").value;
+    const email = document.getElementById("email").value;
+    const message = document.querySelector("textarea").value;
+
+    const templateParams = {
+        nom: nom,
+        prenom: prenom,
+        email: email,
+        service: nomService,
+        total: totalElement.textContent,
+        message: message
+    };
+  console.log(templateParams);
+  
+    // Mail à Orio
+    emailjs.send(
+        "orio serveur",
+        "mail-admin",
+        templateParams
+    )
+
+    .then(function() {
+
+        // Copie au client
+        return emailjs.send(
+            "orio serveur",
+            "mail-client",
+            templateParams
+        );
+
+    })
+
+    .then(function() {
+
+        alert(
+            "Votre demande a bien été envoyée.\n\n" +
+            "Une copie récapitulative vous a été envoyée par email."
+        );
+
+    })
+
+    .catch(function(error) {
+
+        console.error(error);
+
+        alert(
+            "Une erreur est survenue lors de l'envoi du devis."
+        );
+
+    });
+
 }
 
 </script>
