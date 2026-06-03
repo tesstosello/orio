@@ -96,7 +96,7 @@
     .logo-img {
       width: 400px;
       height: 400px;
-      margin: 0 auto 30px;
+      margin: 0 auto -20px;
       display: block;
       mix-blend-mode: multiply;
       filter: contrast(1.05);
@@ -665,6 +665,34 @@
 
     .btn-submit:hover { background: var(--accent-dark); }
 
+    .form-group select {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--sand);
+  padding: 10px 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--charcoal);
+  outline: none;
+  transition: border-color .25s;
+  width: 100%;
+}
+
+.form-group select:focus {
+  border-color: var(--accent);
+}
+
+.contact-info-text a {
+  font-size: 14px;
+  color: var(--warm-gray);
+  text-decoration: none;
+  transition: color .25s;
+}
+
+.contact-info-text a:hover {
+  color: var(--accent-dark);
+}
+
     /* ── FOOTER ── */
     footer {
       padding: 32px 60px;
@@ -828,11 +856,7 @@ Innovation, qualité et proximité sont les valeurs qui guident chacun de nos pr
     <div class="about-visual">
       <div class="about-img-frame">
          <img src="a-propo.png" style="width:100%;height:100%;object-fit:cover;border-radius:2px;">
-        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-          <rect x="8" y="8" width="48" height="38" rx="2" stroke="#c4a882" stroke-width="1.5"/>
-          <circle cx="24" cy="27" r="7" stroke="#c4a882" stroke-width="1.5"/>
-          <path d="M8 46l13-10 11 8 8-7 16 13" stroke="#c4a882" stroke-width="1.5" stroke-linejoin="round"/>
-        </svg>
+        
       </div>
       <div class="about-corner tl"></div>
       <div class="about-corner br"></div>
@@ -1020,7 +1044,7 @@ Innovation, qualité et proximité sont les valeurs qui guident chacun de nos pr
           </div>
           <div class="contact-info-text">
             <strong>Adresse</strong>
-            <span>1 Rue de l'Exemple, 38000 Grenoble</span>
+            <span>Amiens </span>
           </div>
         </div>
 
@@ -1044,7 +1068,7 @@ Innovation, qualité et proximité sont les valeurs qui guident chacun de nos pr
           </div>
           <div class="contact-info-text">
             <strong>Email</strong>
-            <span>tosellolizanatess@gmail.com</span>
+            <a href="mailto:orio.developpement@gmail.com">orio.developpement@gmail.com</a>
           </div>
         </div>
       </div>
@@ -1064,15 +1088,25 @@ Innovation, qualité et proximité sont les valeurs qui guident chacun de nos pr
           <label for="email">Email</label>
           <input type="email" id="email" placeholder="votre@email.fr"/>
         </div>
-        <div class="form-group">
-          <label for="sujet">Sujet</label>
-          <input type="text" id="sujet" placeholder="Comment pouvons-nous vous aider ?"/>
-        </div>
+      <div class="form-group">
+        <label for="sujet">Comment pouvons-nous vous aider ?</label>
+        <select id="sujet">
+           <option value="">Sélectionnez un service</option>
+           <option value="Site vitrine">Site vitrine</option>
+           <option value="Gestion des réseaux sociaux">Gestion des réseaux sociaux</option>
+           <option value="Refonte et optimisation">Refonte et optimisation</option>
+           <option value="Maintenance">Maintenance</option>
+           <option value="Demande de devis">Demande de devis</option>
+           <option value="Autre">Autre</option>
+         </select>
+      </div>
         <div class="form-group">
           <label for="message">Message</label>
           <textarea id="message" placeholder="Votre message..."></textarea>
         </div>
-        <button class="btn-submit" onclick="alert('Message envoyé ! Nous reviendrons vers vous rapidement.')">Envoyer le message</button>
+        <button type="button" class="btn-submit" onclick="envoyerMessage()">
+         Envoyer le message
+        </button>
       </div>
 
     </div>
@@ -1084,5 +1118,36 @@ Innovation, qualité et proximité sont les valeurs qui guident chacun de nos pr
     <span class="footer-copy">© 2026 Orio — Tous droits réservés</span>
   </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script>
+emailjs.init({
+    publicKey: "ZqDhOS49IXAntmCiw"
+});
+
+function envoyerMessage() {
+
+    const params = {
+        nom: document.getElementById("nom").value,
+        prenom: document.getElementById("prenom").value,
+        email: document.getElementById("email").value,
+        sujet: document.getElementById("sujet").value,
+        message: document.getElementById("message").value
+    };
+
+    emailjs.send(
+        "orio serveur",
+        "mail-admin",
+        params
+    )
+    .then(function() {
+        alert("Message envoyé avec succès !");
+    })
+    .catch(function(error) {
+        alert("Erreur lors de l'envoi.");
+        console.error(error);
+    });
+}
+</script>
 </body>
 </html>
