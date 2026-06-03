@@ -32,9 +32,440 @@ body{
     margin:auto;
 }
 
-@keyframes logoFloat{
-    0%,100%{
-        transform:translateY(0);
+.container{
+    max-width:800px;
+    margin:auto;
+    background:var(--white);
+    padding:40px;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:40px;
+}
+
+.option{
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    margin-bottom:15px;
+}
+
+.option label{
+    cursor:pointer;
+    font-size:16px;
+}
+
+.section-title{
+    margin-top:35px;
+    margin-bottom:20px;
+    color:var(--charcoal);
+}
+
+input[type="number"]{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    margin-top:10px;
+}
+
+.form-group{
+    margin-bottom:15px;
+}
+
+.form-group input{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:15px;
+    box-sizing:border-box;
+}
+
+.form-group input:focus{
+    outline:none;
+    border-color:var(--accent);
+}
+
+textarea{
+    width:100%;
+    min-height:120px;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    resize:vertical;
+}
+
+.total-box{
+    margin-top:30px;
+    padding:20px;
+    background:#faf7f2;
+    border-left:4px solid var(--accent);
+}
+
+.total{
+    font-size:28px;
+    font-weight:bold;
+    color:var(--charcoal);
+}
+
+button{
+    width:100%;
+    margin-top:25px;
+    padding:16px;
+    border:none;
+    background:var(--charcoal);
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+    border-radius:6px;
+}
+
+button:hover{
+    opacity:.9;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Chargement des bibliothèques dans le bon ordre -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+<div class="container">
+
+<div class="logo-header">
+    <img src="logo-orio.png" alt="Orio">
+</div>
+
+<h1>Demande de devis</h1>
+
+<p class="subtitle">
+Personnalisez votre projet et obtenez une estimation.
+</p>
+
+<h2 class="section-title">Options complémentaires</h2>
+
+<div class="option">
+<label>
+<input type="checkbox" id="logo-reprise">
+ Reprise ou modification d'un logo existant (+15 €)
+</label>
+</div>
+
+<div class="option">
+<label>
+<input type="checkbox" id="logo-creation">
+ Création d'un logo sur mesure (+20 €)
+</label>
+</div>
+
+<div class="option">
+<label>
+<input type="checkbox" id="donnee-chiffree">
+ Donnée chiffrées  (+50 €)
+</label>
+</div>
+
+<div class="option">
+<label>
+<input type="checkbox" id="compte-admin">
+ Compte Administrateur  (+50 €)
+</label>
+</div>
+
+<div id="bloc-pages">
+
+    <h2 class="section-title">Nombre de pages</h2>
+
+    <p>
+    Le site inclut jusqu'à <strong>10 pages</strong>.<br>
+    Au-delà, un supplément de <strong>5 € par tranche de 5 pages</strong> est appliqué.
+    </p>
+
+    <input
+    type="number"
+    id="pages"
+    value="10"
+    min="10"
+    >
+
+</div>
+
+<h2 id="service-nom"></h2>
+
+  <div class="total-box">
+    <p>Tarif à partir de</p>
+    <div id="prix-base"></div>
+    <small>Le tarif final dépend des options sélectionnées et des besoins de votre projet.</small>
+  </div>
+
+  <div class="form-group">
+    <input type="text" id="nom" placeholder="Nom" required>
+  </div>
+
+ <div class="form-group">
+    <input type="text" id="prenom" placeholder="Prénom" required>
+ </div>
+
+ <div class="form-group">
+    <input type="email" id="email" placeholder="Adresse e-mail" required>
+ </div>
+
+<textarea id="message" placeholder="Décrivez votre projet..."></textarea>
+
+<div class="total-box">
+<p>Total estimé :</p>
+<div class="total" id="total">0 €</div>
+</div>
+
+<button onclick="handleDevis()">
+Télécharger mon devis + envoyer
+</button>
+
+</div>
+
+<script>
+
+// Initialisation EmailJS après chargement complet de la page
+window.addEventListener("load", function() {
+    emailjs.init("ZqDhOS49IXAntmCiw");
+});
+
+const service = new URLSearchParams(window.location.search).get("service");
+
+let prixBase = 0;
+let nomService = "";
+
+switch(service){
+
+    case "vitrine":
+        prixBase = 390;
+        nomService = "Site vitrine";
+        break;
+
+    case "refonte":
+        prixBase = 250;
+        nomService = "Refonte et optimisation";
+        break;
+
+    case "social":
+        prixBase = 19;
+        nomService = "Gestion des réseaux sociaux";
+        break;
+
+    case "maintenance":
+        prixBase = 19;
+        nomService = "Maintenance";
+        break;
+
+    default:
+        prixBase = 0;
+        nomService = "Service";
+}
+
+if(service === "social" || service === "maintenance"){
+
+    const optionDonnee = document.getElementById("donnee-chiffree");
+    const optionAdmin = document.getElementById("compte-admin");
+
+    if(optionDonnee){
+        optionDonnee.closest(".option").style.display = "none";
+    }
+
+    if(optionAdmin){
+        optionAdmin.closest(".option").style.display = "none";
+    }
+
+    const blocPages = document.getElementById("bloc-pages");
+
+    if(blocPages){
+        blocPages.style.display = "none";
+    }
+}
+
+const repriseLogo = document.getElementById("logo-reprise");
+const creationLogo = document.getElementById("logo-creation");
+const donneeChiffree = document.getElementById("donnee-chiffree");
+const compteAdmin = document.getElementById("compte-admin");
+
+const pages = document.getElementById("pages");
+const totalElement = document.getElementById("total");
+
+const serviceNom = document.getElementById("service-nom");
+const prixBaseElement = document.getElementById("prix-base");
+
+if(serviceNom){
+    serviceNom.textContent = nomService;
+}
+
+if(prixBaseElement){
+
+    if(service === "social" || service === "maintenance"){
+        prixBaseElement.textContent = prixBase + " €/mois";
+    } else {
+        prixBaseElement.textContent = prixBase + " €";
+    }
+
+}
+
+function calculerTotal(){
+
+    let abonnement = prixBase;
+    let fraisUnique = 0;
+
+    if(repriseLogo && repriseLogo.checked){
+        fraisUnique += 15;
+    }
+
+    if(creationLogo && creationLogo.checked){
+        fraisUnique += 20;
+    }
+
+    if(donneeChiffree && donneeChiffree.checked){
+        fraisUnique += 50;
+    }
+
+    if(compteAdmin && compteAdmin.checked){
+        fraisUnique += 50;
+    }
+
+    if(
+        pages &&
+        service !== "social" &&
+        service !== "maintenance"
+    ){
+
+        const nbPages = parseInt(pages.value) || 10;
+
+        if(nbPages > 10){
+
+            const pagesSupp = nbPages - 10;
+            const tranches = Math.ceil(pagesSupp / 5);
+
+            fraisUnique += tranches * 5;
+        }
+    }
+
+    if(service === "social" || service === "maintenance"){
+
+        totalElement.innerHTML =
+            "Premier mois : <strong>" +
+            (abonnement + fraisUnique) +
+            " €</strong><br>" +
+            " Puis : <strong>" +
+            abonnement +
+            " €/mois</strong>";
+
+    }else{
+
+        totalElement.textContent =
+            (abonnement + fraisUnique) + " €";
+    }
+}
+
+if(repriseLogo){
+    repriseLogo.addEventListener("change", calculerTotal);
+}
+
+if(creationLogo){
+    creationLogo.addEventListener("change", calculerTotal);
+}
+
+if(donneeChiffree){
+    donneeChiffree.addEventListener("change", calculerTotal);
+}
+
+if(compteAdmin){
+    compteAdmin.addEventListener("change", calculerTotal);
+}
+
+if(pages){
+    pages.addEventListener("input", calculerTotal);
+}
+
+calculerTotal();
+
+function envoyerDevis() {
+
+    const nom = document.getElementById("nom").value;
+    const prenom = document.getElementById("prenom").value;
+    const email = document.getElementById("email").value;
+    const message = document.querySelector("textarea").value || "";
+
+    const templateParams = {
+        nom: nom,
+        prenom: prenom,
+        email: email,
+        service: nomService,
+        total: totalElement.textContent,
+        message: message
+    };
+
+    console.log(templateParams);
+
+    emailjs.send(
+        "orio serveur",
+        "mail-admin",
+        templateParams
+    )
+
+    .then(function() {
+
+        return emailjs.send(
+            "orio serveur",
+            "mail-client",
+            templateParams
+        );
+
+    })
+
+    .then(function() {
+
+        alert(
+            "Votre demande a bien été envoyée.\n\n" +
+            "Une copie récapitulative vous a été envoyée par email."
+        );
+
+    })
+
+    .catch(function(error) {
+
+        console.error(error);
+
+        alert(
+            "Une erreur est survenue lors de l'envoi du devis."
+        );
+
+    });
+
+}
+
+function genererPDF() {
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const nom = document.getElementById("nom").value || "";
+    const prenom = document.getElementById("prenom").value || "";
+    const email = document.getElementById("email").value || "";
+    const message = document.querySelector("textarea")?.value || "";
+
+    const total = document.getElementById("total").textContent;
+
+    const date = new Date().toLocaleDateString("fr-FR");
+    const numeroDevis = "OR-" + Date.now();
+    const logoBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0CAYAAADL1t+KAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAB9KADAAQAAAABAAAB9AAAAAB3bs6AAABAAElEQVR4Aey9CZRl2VUd+CP+/zGPmZFDZVVJKlECS4WEBiQLZOQCA26wKcAtYTMIYRurgdUYS+02vaBtZK82vRp60R6gbTC2bOO2VtNuMG1sY9qtgVFgoAGJQUaSgUbIqJCqSlk5RMbw+5yXuaN27Dzn3vdeRKIa3l8rc59z9t7n/H//jXjxp/dHI7nMZrM5/yflUVRjTY1nrceZ3usRF9W4Z41n7TB/WP9sv3g94qIa76kaz9ph/w37L9svXo+4qMZ7qsazdth/z9D9V9skNZ43kWu76EubDn279BvmD+vfZb8M+y//pTf8/N1cgS77afj9M/z+6bJfTvz7pzRMOeTA7AdceegiLGmVQw5Ev1oOXYTqZY1yyIHQ1nLoIlQva5RDDoS2lkMXoXpZoxxyILS1HLoI1csa5ZADoa3l0EWoXtYohxwIbS2HLkL1skY55EBoazl0EaqXNcohB0Jby6GLUL2sUQ45ENpaDl2E6mWNcsiB0NZy6CJUL2uUQw6EtpZDF6F6WaMcciC0tRy6CNXLGuWQA6Gt5dBFqF7WKIccCG0thy5C9bJGOeRAaCV HJ053t3AVuCkztqlnmqPht2ZwzvEwf1j/        transform:translateY(0);
     }
     50%{
         transform:translateY(-8px);
